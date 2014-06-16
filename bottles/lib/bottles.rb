@@ -12,43 +12,70 @@ class Bottles
 
   def verse(n)
     number_of_bottles = BottleQuantity.new(n)
-    "#{number_of_bottles.to_s.capitalize} #{number_of_bottles.container} of beer on the wall, " +
-      "#{number_of_bottles} #{number_of_bottles.container} of beer.\n" + 
+    "#{number_of_bottles.to_s.capitalize} of beer on the wall, " +
+      "#{number_of_bottles} of beer.\n" + 
       "#{number_of_bottles.action}, " +
-      "#{number_of_bottles.remainder} #{number_of_bottles.remainder.container} of beer on the wall.\n"
+      "#{number_of_bottles.remainder} of beer on the wall.\n"
   end
 
-  class BottleQuantity
+  module BottleQuantity
 
-    def initialize(number_of_bottles)
-      @number_of_bottles = number_of_bottles
+    def self.new(number)
+      return None.new if number == 0
+      return One.new if number == 1
+      Default.new(number)
     end
 
-    def action
-      return "Go to the store and buy some more" if @number_of_bottles == 0
-      "Take #{pronoun} down and pass it around"
+    class Default
+      def initialize(number_of_bottles)
+        @number_of_bottles = number_of_bottles
+      end
+
+      def action
+        "Take one down and pass it around"
+      end
+
+      def remainder
+        BottleQuantity.new(@number_of_bottles - 1)
+      end
+
+      def to_s
+        "#{@number_of_bottles} #{container}"
+      end
+
+      private
+
+      def container
+        'bottles'
+      end
     end
 
-    def remainder
-      return self.class.new(99) if @number_of_bottles == 0
-      self.class.new(@number_of_bottles - 1)
+    class One
+      def action
+        'Take it down and pass it around'
+      end
+
+      def remainder
+        None.new
+      end
+
+      def to_s
+        '1 bottle'
+      end
     end
 
-    def to_s
-      return 'no more' if @number_of_bottles == 0
-      @number_of_bottles.to_s
-    end
+    class None
+      def action
+        'Go to the store and buy some more'
+      end
 
-    def container
-      return 'bottle' if @number_of_bottles == 1
-      'bottles'
-    end
+      def remainder
+        BottleQuantity.new(99)
+      end
 
-    private
-
-    def pronoun
-      return 'it' if @number_of_bottles == 1
-      'one'
+      def to_s
+        'no more bottles'
+      end
     end
   end
 
