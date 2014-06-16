@@ -21,12 +21,15 @@ class Bottles
   module BottleQuantity
 
     def self.new(number)
-      return None.new if number == 0
-      return One.new if number == 1
-      Default.new(number)
+      @special_cases.fetch(number) { Several.new(number) }
     end
 
-    class Default
+    def self.special_case(number, &block)
+      @special_cases ||= {}
+      @special_cases[number] = Class.new(&block).new
+    end
+
+    class Several
       def initialize(number_of_bottles)
         @number_of_bottles = number_of_bottles
       end
@@ -40,23 +43,17 @@ class Bottles
       end
 
       def to_s
-        "#{@number_of_bottles} #{container}"
-      end
-
-      private
-
-      def container
-        'bottles'
+        "#{@number_of_bottles} bottles"
       end
     end
 
-    class One
+    special_case(1) do
       def action
         'Take it down and pass it around'
       end
 
       def remainder
-        None.new
+        BottleQuantity.new(0)
       end
 
       def to_s
@@ -64,13 +61,13 @@ class Bottles
       end
     end
 
-    class None
+    special_case(0) do
       def action
         'Go to the store and buy some more'
       end
 
       def remainder
-        BottleQuantity.new(99)
+        Several.new(99)
       end
 
       def to_s
