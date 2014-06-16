@@ -74,6 +74,20 @@ class Bottles
         'no more bottles'
       end
     end
+
+    special_case(6) do
+      def action
+        'Take it down and pass it around'
+      end
+
+      def remainder
+        BottleQuantity.new(5)
+      end
+
+      def to_s
+        '1 six-pack'
+      end
+    end
   end
 
 end
