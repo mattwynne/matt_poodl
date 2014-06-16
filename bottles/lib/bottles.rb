@@ -1,5 +1,4 @@
-# Feel free to delete the instructions once you get going
-puts instructions(__FILE__)
+require 'forwardable'
 
 class Bottles
 
@@ -11,38 +10,46 @@ class Bottles
     verses(99, 0)
   end
 
-  def verse(number_of_bottles)
-    "#{count(number_of_bottles).capitalize} #{container(number_of_bottles)} of beer on the wall, " +
-      "#{count(number_of_bottles)} #{container(number_of_bottles)} of beer.\n" + 
-      "#{action(number_of_bottles)}, " +
-      "#{count(remainder(number_of_bottles))} #{container(remainder(number_of_bottles))} of beer on the wall.\n"
+  def verse(n)
+    number_of_bottles = BottleQuantity.new(n)
+    "#{number_of_bottles.to_s.capitalize} #{number_of_bottles.container} of beer on the wall, " +
+      "#{number_of_bottles} #{number_of_bottles.container} of beer.\n" + 
+      "#{number_of_bottles.action}, " +
+      "#{number_of_bottles.remainder} #{number_of_bottles.remainder.container} of beer on the wall.\n"
   end
 
-  private
+  class BottleQuantity
 
-  def action(number_of_bottles)
-    return "Go to the store and buy some more" if number_of_bottles == 0
-    "Take #{pronoun(number_of_bottles)} down and pass it around"
-  end
+    def initialize(number_of_bottles)
+      @number_of_bottles = number_of_bottles
+    end
 
-  def pronoun(number_of_bottles)
-    return 'it' if number_of_bottles == 1
-    'one'
-  end
+    def action
+      return "Go to the store and buy some more" if @number_of_bottles == 0
+      "Take #{pronoun} down and pass it around"
+    end
 
-  def remainder(number_of_bottles)
-    return 99 if number_of_bottles == 0
-    number_of_bottles-1
-  end
+    def remainder
+      return self.class.new(99) if @number_of_bottles == 0
+      self.class.new(@number_of_bottles - 1)
+    end
 
-  def count(number_of_bottles)
-    return 'no more' if number_of_bottles == 0
-    number_of_bottles.to_s
-  end
+    def to_s
+      return 'no more' if @number_of_bottles == 0
+      @number_of_bottles.to_s
+    end
 
-  def container(number_of_bottles)
-    return 'bottle' if number_of_bottles == 1
-    'bottles'
+    def container
+      return 'bottle' if @number_of_bottles == 1
+      'bottles'
+    end
+
+    private
+
+    def pronoun
+      return 'it' if @number_of_bottles == 1
+      'one'
+    end
   end
 
 end
