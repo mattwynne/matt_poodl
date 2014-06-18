@@ -8,10 +8,17 @@ class Farm
 
   def lyrics
     animals.map { |animal|
+      if animal
+        species = animal.species
+        sound = animal.sound
+      else
+        species = '<silence>'
+        sound = '<silence>'
+      end
     %{Old MacDonald had a farm, E-I-E-I-O,
-And on that farm he had #{articleify(animal.species)}, E-I-E-I-O,
-With #{articleify(animal.sound)} #{animal.sound} here and #{articleify(animal.sound)} #{animal.sound} there,
-Here #{articleify(animal.sound)}, there #{articleify(animal.sound)}, everywhere #{articleify(animal.sound)} #{animal.sound},
+And on that farm he had #{articleify(species)}, E-I-E-I-O,
+With #{articleify(sound)} #{sound} here and #{articleify(sound)} #{sound} there,
+Here #{articleify(sound)}, there #{articleify(sound)}, everywhere #{articleify(sound)} #{sound},
 Old MacDonald had a farm, E-I-E-I-O.}
     }.join("\n\n")
   end
